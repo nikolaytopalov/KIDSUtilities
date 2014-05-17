@@ -1,4 +1,4 @@
-nstKIDSUtil1 ;NST - KIDS Utilities ; 01 May 2014 10:30 PM
+nstKIDSUtil1 ;NST - KIDS Utilities ; 16 May 2014 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
@@ -137,6 +137,24 @@ exportName(pFile,pComponentName) ; return export file name
  ; Strip blanks for files .4, .401, .402
  S tmp=$S((pFile=.4)!(pFile=.401)!(pFile=.402):$P(pComponentName,"    ",1),1:pComponentName)
  S ien=$$componentIEN^nstKIDSUtil1(pFile,tmp)
- I 'ien W !,pComponentName," DOES NOT EXIST IN FILE #"_pfile Q "Error"
+ I 'ien D  Q "Error"
+ . U IO(0)
+ . W !,pComponentName," DOES NOT EXIST IN FILE #"_pFile
+ . U IO
+ . Q
  S suffix=$$suffix^nstKIDSUtil1(pFile)_ien  ; KEY*123
  Q $$exportNameBySuffix^nstKIDSUtil1(suffix)
+ ;
+ ; #### Return component name
+ ;
+ ; Input parameters
+ ; ================
+ ;
+ ; pFile          = FileMan number (e.g. 8994)
+ ; pComponentName = Component name (e.g. XWB EGCHO STRING)
+ ;
+componentName(pFile,pComponentName) ; return component name
+ ; Strip blanks for files .4, .401, .402
+ N tmp
+ S tmp=$S((pFile=.4)!(pFile=.401)!(pFile=.402):$P(pComponentName,"    ",1),1:pComponentName)
+ Q tmp

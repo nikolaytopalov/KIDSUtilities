@@ -1,4 +1,4 @@
-nstKIDSComponents ;NST - KIDS Utilities ; 01 May 2014 10:30 PM
+nstKIDSComponents ;NST - KIDS Utilities ; 16 May 2014 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
@@ -76,7 +76,7 @@ split(pDeleteOnly) ;
  . F  S componentName=$O(^XPD(9.6,buildIEN,"KRN",file,"NM","B",componentName)) Q:componentName=""  D
  . . S tmp=$S((file=.4)!(file=.401)!(file=.402):$P(componentName,"    ",1),1:componentName)
  . . S ien=$$componentIEN^nstKIDSUtil1(file,tmp)
- . . I 'ien W !,pComponentName," DOES NOT EXIST IN FILE #"_pfile Q
+ . . I 'ien W !,componentName," DOES NOT EXIST IN FILE #"_file Q
  . . S suffix=$$suffix^nstKIDSUtil1(file)_ien  ; KEY*123
  . . S miniBuildName=buildName_"*"_suffix
  . . D deleteBuild(.RY,miniBuildName) ; delete the mini build

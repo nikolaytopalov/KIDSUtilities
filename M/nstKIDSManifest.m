@@ -1,4 +1,4 @@
-nstKIDSManifest ;NST - KIDS Utilities - KIDS build manifest ; 01 May 2014 10:30 PM
+nstKIDSManifest ;NST - KIDS Utilities - KIDS build manifest ; 16 May 2014 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
@@ -225,15 +225,15 @@ writeRequiredBuilds(pBuildIEN) ; Write Required Builds
  ;
  ; pBuildIEN = Build IEN
 writeDataDictionaries(pBuildIEN) ; Write Data Dictionaries
- N componentName,file,exportFileName
+ N kernelComponentName,file,exportFileName
  ;
- S componentName=$$componentName^nstKIDSManifest("DD")  ; Data Dictionary record name
+ S kernelComponentName=$$kernelComponentName^nstKIDSManifest("DD")  ; Data Dictionary record name
  ;
  W !,"<","dataDictionaries",">"
  S file=""
  F  S file=$O(^XPD(9.6,pBuildIEN,4,"B",file)) Q:file=""  D
  . S exportFileName=$$exportName^nstKIDSUtil1("DD",file)
- . W !,"<",componentName
+ . W !,"<",kernelComponentName
  . W $$attribute^nstKIDSManifest("name",file)
  . W $$attribute^nstKIDSManifest("export",exportFileName)
  . W "/>"
@@ -243,20 +243,21 @@ writeDataDictionaries(pBuildIEN) ; Write Data Dictionaries
  ;
  ; pBuildIEN = Build IEN
 writeKernelComponents(pBuildIEN) ; Write Kernel components 
- N component,componentName,exportFileName,file
+ N component,componentName,kernelComponentName,exportFileName,file
  ;
  F file=9.8,8994,19,19.1,.4,.401,.402,.403,.5,.84,3.6,3.8,9.2,101,409.61,771,870,8989.51,8989.52 D
- . S componentName=$$componentName^nstKIDSManifest(file)
- . W !,"<",componentName_"s",">"
+ . S kernelComponentName=$$kernelComponentName^nstKIDSManifest(file)
+ . W !,"<",kernelComponentName_"s",">"
  . S component=""
  . F  S component=$O(^XPD(9.6,pBuildIEN,"KRN",file,"NM","B",component)) Q:component=""  D
+ . . S componentName=$$componentName^nstKIDSUtil1(file,component)
  . . S exportFileName=$$exportName^nstKIDSUtil1(file,component)
- . . W !,"<",componentName
- . . W $$attribute^nstKIDSManifest("name",component)
+ . . W !,"<",kernelComponentName
+ . . W $$attribute^nstKIDSManifest("name",componentName)
  . . W $$attribute^nstKIDSManifest("export",exportFileName)
  . . W "/>"
  . . Q
- . W !,"</",componentName_"s",">"
+ . W !,"</",kernelComponentName_"s",">"
  . Q
  Q
  ;
@@ -265,7 +266,7 @@ attribute(pAttributeName,pAttributeValue)  ;  return attribute pair "name"="valu
  S QT=$C(34)  ; quote "
  Q " "_pAttributeName_"="_QT_$$SYMENC^MXMLUTL(pAttributeValue)_QT ; #IA 4153 supported
  ;
-componentName(pFile) ; return Kernel component name by FileMan file number
+kernelComponentName(pFile) ; return Kernel component name by FileMan file number
  I pFile="DD" Q "dataDictionary" ; special check for Data Dictionary
  I pFile=.4  Q "printTemplate"  ; PRINT TEMPLATE
  I pFile=.401 Q "sortTemplate"  ; SORT TEMPLATE
