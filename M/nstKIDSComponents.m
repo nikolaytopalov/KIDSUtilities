@@ -1,8 +1,8 @@
-nstKIDSComponents ;NST - KIDS Utilities ; 16 May 2014 10:30 PM
+nstKIDSComponents ;NST - KIDS Utilities ; 10 Feb 2017 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
- ;;	Copyright 2014 Nikolay Topalov
+ ;;	Copyright 2014-2017 Nikolay Topalov
  ;;
  ;;	Licensed under the Apache License, Version 2.0 (the "License");
  ;;	you may not use this file except in compliance with the License.
@@ -148,7 +148,7 @@ createBuildDD(RY,pBuildIEN,pFile,pMiniBuildName) ; create a new record in BUILD 
  K FDA,NIEN,NXE
  S iens="+1,"_miniBuildIEN_","
  S FDA(9.64,iens,.01)=pFile
- S IEN(1)=pFile
+ S NIEN(1)=pFile
  ;
  D UPDATE^DIE("S","FDA","NIEN","NXE")
  ;
@@ -390,4 +390,11 @@ exportRoutinesPlain(pRoutines,pExportPath)  ;
  . D ^%ZISC
  . U 0
  . Q
+ Q
+ ;
+exportRoutinesPlainNamespace(pNamespace,pExportPath) 
+ N X,routines
+ S X=pNamespace
+ F  S X=$O(^DIC(9.8,"B",X)) Q:X'[pNamespace  S routines(X)="" 
+ D exportRoutinesPlain(.routines,pExportPath)  ;
  Q
