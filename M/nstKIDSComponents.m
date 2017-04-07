@@ -1,4 +1,4 @@
-nstKIDSComponents ;NST - KIDS Utilities ; 10 Feb 2017 10:30 PM
+nstKIDSComponents ;NST - KIDS Utilities ; 07 Apr 2017 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
@@ -74,6 +74,8 @@ split(pDeleteOnly) ;
  F file=.4,.401,.402,.403,.5,.84,3.6,3.8,9.2,19,19.1,101,409.61,771,870,8989.51,8989.52,8994 D
  . S componentName=""
  . F  S componentName=$O(^XPD(9.6,buildIEN,"KRN",file,"NM","B",componentName)) Q:componentName=""  D
+ . . S ien=$O(^XPD(9.6,buildIEN,"KRN",file,"NM","B",componentName,""))
+ . . Q:$P(^XPD(9.6,buildIEN,"KRN",file,"NM",ien,0),"^",3)=1  ; skip delete at site. It will be included in the build manifest
  . . S tmp=$S((file=.4)!(file=.401)!(file=.402):$P(componentName,"    ",1),1:componentName)
  . . S ien=$$componentIEN^nstKIDSUtil1(file,tmp)
  . . I 'ien W !,componentName," DOES NOT EXIST IN FILE #"_file Q
@@ -358,6 +360,8 @@ transportRoutines(pBuildIEN,pExportPath,pExportFormat) ; Export routines include
  ;
  S routine=""
  F  S routine=$O(^XPD(9.6,pBuildIEN,"KRN",9.8,"NM","B",routine)) Q:routine=""  D
+ . S ien=$O(^XPD(9.6,pBuildIEN,"KRN",9.8,"NM","B",routine,""))
+ . Q:$P(^XPD(9.6,pBuildIEN,"KRN",9.8,"NM",ien,0),"^",3)=1  ; skip delete at site. It will be included in the build manifest
  . S routines(routine)=""
  . Q
  I pExportFormat=1 D exportRoutinesPlain(.routines,pExportPath) ; export the routines

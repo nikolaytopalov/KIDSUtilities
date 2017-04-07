@@ -1,8 +1,8 @@
-nstKIDSManifest ;NST - KIDS Utilities - KIDS build manifest ; 16 May 2014 10:30 PM
+nstKIDSManifest ;NST - KIDS Utilities - KIDS build manifest ; 07 Apr 2017 10:30 PM
  ;;
  ;;	Author: Nikolay Topalov
  ;;
- ;;	Copyright 2014 Nikolay Topalov
+ ;;	Copyright 2014-2017 Nikolay Topalov
  ;;
  ;;	Licensed under the Apache License, Version 2.0 (the "License");
  ;;	you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ getBuildAttributes(pBuild,pAttribute)  ; get build attributes
  S cnt=cnt+1,pAttribute(cnt)=$$attribute("deletePostInstallRoutine",$$GET1^DIQ(9.6,buildIEN,914.1))
  S packageIEN=$$GET1^DIQ(9.6,buildIEN,1,"I")
  S packageVersion=$$GET1^DIQ(9.4,packageIEN,13)  ; current verision
- S packageVersionIEN=$O(^DIC(9.4,454,22,"B",packageVersion,""))
+ S packageVersionIEN=$O(^DIC(9.4,454,22,"B",+packageVersion,""))
  S cnt=cnt+1,pAttribute(cnt)=$$attribute("packageName",$$GET1^DIQ(9.6,buildIEN,1,"E"))
  S cnt=cnt+1,pAttribute(cnt)=$$attribute("packageNumber",packageIEN)
  S cnt=cnt+1,pAttribute(cnt)=$$attribute("packageVersion",$$GET1^DIQ(9.4,packageIEN,13))
@@ -243,18 +243,26 @@ writeDataDictionaries(pBuildIEN) ; Write Data Dictionaries
  ;
  ; pBuildIEN = Build IEN
 writeKernelComponents(pBuildIEN) ; Write Kernel components 
- N component,componentName,kernelComponentName,exportFileName,file
+ N action,comment,component,componentName,kernelComponentName,exportFileName,file,ien,iens
+ ;
+ ; Print a comment for "ACTION" field
+ D FIELD^DID(9.68,.03,"","POINTER","comment")  ; get internal and external values of "ACTION" field
+ W !,"<!-- action= ",comment("POINTER")," -->"
  ;
  F file=9.8,8994,19,19.1,.4,.401,.402,.403,.5,.84,3.6,3.8,9.2,101,409.61,771,870,8989.51,8989.52 D
  . S kernelComponentName=$$kernelComponentName^nstKIDSManifest(file)
  . W !,"<",kernelComponentName_"s",">"
  . S component=""
  . F  S component=$O(^XPD(9.6,pBuildIEN,"KRN",file,"NM","B",component)) Q:component=""  D
+ . . S ien=$O(^XPD(9.6,pBuildIEN,"KRN",file,"NM","B",component,0))
+ . . S iens=ien_","_file_","_pBuildIEN_","
+ . . S action=$$GET1^DIQ(9.68,iens,.03,"I")
  . . S componentName=$$componentName^nstKIDSUtil1(file,component)
  . . S exportFileName=$$exportName^nstKIDSUtil1(file,component)
  . . W !,"<",kernelComponentName
  . . W $$attribute^nstKIDSManifest("name",componentName)
  . . W $$attribute^nstKIDSManifest("export",exportFileName)
+ . . W $$attribute^nstKIDSManifest("action",action)
  . . W "/>"
  . . Q
  . W !,"</",kernelComponentName_"s",">"
